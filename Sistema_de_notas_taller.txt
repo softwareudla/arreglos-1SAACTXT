@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define n_alumnos 5
+#define n_materias 3
+
+int main() {
+    float notas[n_alumnos][n_alumnos];
+    float promA[n_alumnos] = {0};
+    float promM[n_materias] = {0};
+    float mayorNotaAlumno[n_alumnos], menorNotaAlumno[n_alumnos];
+    float mayorNotaMateria[n_materias], menorNotaMateria[n_materias];
+    int totalAprobados[n_materias] = {0}, totalReprobados[n_materias] = {0};
+
+    for (int materia = 0; materia < n_materias; materia++) {
+        for (int alumno = 0; alumno < n_alumnos; alumno++) {
+            float entrada;
+            int valido;
+            do {
+                printf("Nota del alumno %d en materia %d (0-10): ", alumno + 1, materia + 1);
+                valido = scanf("%f", &entrada);
+                while (getchar() != '\n');
+
+                if (valido != 1 || entrada < 0 || entrada > 10)
+                    printf("Entrada invalida. Ingrese un numero entre 0 y 10.\n");
+            } while (valido != 1 || entrada < 0 || entrada > 10);
+            notas[materia][alumno] = entrada;
+        }
+    }
+
+    for (int alumno = 0; alumno < n_alumnos; alumno++) {
+        float suma = 0;
+        mayorNotaAlumno[alumno] = notas[0][alumno];
+        menorNotaAlumno[alumno] = notas[0][alumno];
+
+        for (int materia = 0; materia < n_materias; materia++) {
+            float nota = notas[materia][alumno];
+            suma += nota;
+
+            if (nota > mayorNotaAlumno[alumno]) mayorNotaAlumno[alumno] = nota;
+            if (nota < menorNotaAlumno[alumno]) menorNotaAlumno[alumno] = nota;
+        }
+        promA[alumno] = suma / n_materias;
+    }
+
+    for (int materia = 0; materia < n_materias; materia++) {
+        float suma = 0;
+        mayorNotaMateria[materia] = notas[materia][0];
+        menorNotaMateria[materia] = notas[materia][0];
+
+        for (int alumno = 0; alumno < n_alumnos; alumno++) {
+            float nota = notas[materia][alumno];
+            suma += nota;
+
+            if (nota > mayorNotaMateria[materia]) mayorNotaMateria[materia] = nota;
+            if (nota < menorNotaMateria[materia]) menorNotaMateria[materia] = nota;
+
+            if (nota >= 6)
+                totalAprobados[materia]++;
+            else
+                totalReprobados[materia]++;
+        }
+        promM[materia] = suma / n_alumnos;
+    }
+
+    printf("\n== Promedio por Alumno ==\n");
+    for (int i = 0; i < n_alumnos; i++) {
+        printf("Alumno %d: %.2f\n", i + 1, promA[i]);
+    }
+
+    printf("\n== Promedio por Materia ==\n");
+    for (int j = 0; j < n_materias; j++) {
+        printf("Materia %d: %.2f\n", j + 1, promM[j]);
+    }
+
+    printf("\n== Nota maxima y minima por Alumno ==\n");
+    for (int i = 0; i < n_alumnos; i++) {
+        printf("Alumno %d - Maxima: %.2f | Minima: %.2f\n", i + 1, mayorNotaAlumno[i], menorNotaAlumno[i]);
+    }
+
+    printf("\n== Nota maxima y minima por Materia ==\n");
+    for (int j = 0; j < n_materias; j++) {
+        printf("Materia %d - Maxima: %.2f | Minima: %.2f\n", j + 1, mayorNotaMateria[j], menorNotaMateria[j]);
+    }
+
+    printf("\n== Aprobados y Reprobados por Materia ==\n");
+    for (int j = 0; j < n_materias; j++) {
+        printf("Materia %d - Aprobados: %d | Reprobados: %d\n", j + 1, totalAprobados[j], totalReprobados[j]);
+    }
+
+    return 0;
+}
